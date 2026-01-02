@@ -1,73 +1,77 @@
-# Welcome to your Lovable project
+# CodeShield AI
 
-## Project info
+> 🛡️ AI-powered security vulnerability explainer for developers
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Hackathon
 
-## How can I edit this code?
+**MLH Hackathon** – Built entirely during the hackathon period.
 
-There are several ways of editing your application.
+## Problem Statement
 
-**Use Lovable**
+Developers often write code with security vulnerabilities without realizing it. Traditional security scanners provide technical jargon and complex outputs that are difficult to understand. There's a need for an educational tool that helps developers learn about security in a friendly, accessible way.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## Solution
 
-Changes made via Lovable will be committed automatically to this repo.
+CodeShield AI is a web application that helps developers understand common security vulnerabilities in their code using AI-powered explanations. Users can:
 
-**Use your preferred IDE**
+1. Paste a code snippet
+2. Select a programming language (JavaScript or Python)
+3. Click "Analyze" to receive:
+   - Potential security issues with severity levels
+   - Clear, educational explanations in plain English
+   - High-level safer coding suggestions
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+**Important:** This is an educational tool, NOT a penetration testing tool. It never provides exploit code or hacking instructions.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Tech Stack
 
-Follow these steps:
+- **Frontend:** React + TypeScript + Vite
+- **Styling:** Tailwind CSS with custom design system
+- **Animations:** Framer Motion
+- **Backend:** Lovable Cloud (Edge Functions)
+- **AI:** Lovable AI Gateway (Gemini)
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## Features
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+- 🔍 Analyze JavaScript and Python code for security issues
+- 📚 Educational explanations in plain English
+- 🎯 Severity ratings (High, Medium, Low)
+- 💡 Safer coding practice suggestions
+- ⚡ Real-time analysis with loading states
+- 🌙 Dark cybersecurity-themed UI
 
-# Step 3: Install the necessary dependencies.
-npm i
+## How to Run Locally
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```bash
+# Clone the repository
+git clone <repo-url>
+cd codeshield-ai
+
+# Install dependencies
+npm install
+
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The app will be available at `http://localhost:5173`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Safety Considerations
 
-**Use GitHub Codespaces**
+This tool is designed with safety in mind:
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- ❌ Does NOT generate exploit code
+- ❌ Does NOT provide hacking instructions
+- ✅ Focuses on education and awareness
+- ✅ Suggests defensive practices only
 
-## What technologies are used for this project?
+## Demo
 
-This project is built with:
+1. Paste code with a potential vulnerability (e.g., SQL concatenation, hardcoded passwords)
+2. Select the language
+3. Click "Analyze"
+4. Review the educational breakdown
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+---
 
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+**Built with ❤️ during MLH Hackathon**
