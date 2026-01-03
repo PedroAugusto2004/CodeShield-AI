@@ -59,7 +59,7 @@ const Index = () => {
     }
   };
 
-  // Client-side enhancement function to ensure languageMismatch and suggestedPattern are present
+  // Client-side enhancement function to ensure languageMismatch and suggestedFix are present
   const enhanceAnalysisResult = (
     analysis: AnalysisResult,
     code: string,
@@ -75,54 +75,63 @@ const Index = () => {
       }
     }
 
-    // Generate fallback suggested pattern if backend didn't provide one
-    if (!enhanced.suggestedPattern && enhanced.issues && enhanced.issues.length > 0) {
+    // Don't generate a fix if there's a language mismatch
+    if (enhanced.languageMismatch) {
+      enhanced.suggestedFix = null;
+      return enhanced;
+    }
+
+    // Generate fallback suggested fix if backend didn't provide one
+    if (!enhanced.suggestedFix && enhanced.issues && enhanced.issues.length > 0) {
       const primaryIssue = enhanced.issues[0];
-      enhanced.suggestedPattern = {
-        title: "Suggested Safer Pattern",
-        explanation: `To address "${primaryIssue.title}", consider implementing input validation, output encoding, and following the principle of least privilege. These fundamental practices help mitigate many common security vulnerabilities.`,
-        codeSnippet: getPatternSnippet(primaryIssue.title),
+      const fixExample = getFixExample(primaryIssue.title, code);
+
+      enhanced.suggestedFix = {
+        vulnerabilityName: primaryIssue.title,
+        whyThisWorks: `This fix addresses "${primaryIssue.title}" by implementing proper input validation and output encoding. These fundamental security practices prevent user-controlled data from being interpreted as code or commands.`,
+        vulnerableCode: fixExample?.vulnerableCode || null,
+        secureCode: fixExample?.secureCode || null,
       };
     }
 
     return enhanced;
   };
 
-  // Get a relevant code snippet based on the issue type
-  const getPatternSnippet = (issueTitle: string): string | undefined => {
+  // Get vulnerability-specific fix examples based on the issue type
+  const getFixExample = (issueTitle: string, code: string): { vulnerableCode: string; secureCode: string } | null => {
     const title = issueTitle.toLowerCase();
 
+    // Try to extract relevant code patterns from the user's actual code
     if (title.includes("xss") || title.includes("cross-site scripting") || title.includes("reflected")) {
-      return `// Instead of directly inserting user input:
-// res.send("<h1>" + userInput + "</h1>");
-
-// Use proper encoding/escaping:
-import { escapeHtml } from 'your-utility-library';
-res.send("<h1>" + escapeHtml(userInput) + "</h1>");
-
-// Or use a templating engine with auto-escaping`;
+      // Look for patterns like res.send() with concatenation
+      const sendMatch = code.match(/res\.send\s*\([^)]+\)/);
+      if (sendMatch) {
+        return {
+          vulnerableCode: sendMatch[0],
+          secureCode: sendMatch[0].replace(/\+\s*\w+/, "+ escapeHtml(name)").replace("res.send", "// Use HTML escaping\nres.send"),
+        };
+      }
+      return {
+        vulnerableCode: 'res.send("Hello " + name);',
+        secureCode: 'import { escapeHtml } from "escape-html";\nres.send("Hello " + escapeHtml(name));',
+      };
     }
 
     if (title.includes("sql") || title.includes("injection")) {
-      return `// Instead of string concatenation:
-// query("SELECT * FROM users WHERE id = " + userId);
-
-// Use parameterized queries:
-query("SELECT * FROM users WHERE id = ?", [userId]);`;
+      return {
+        vulnerableCode: 'query("SELECT * FROM users WHERE id = " + userId);',
+        secureCode: 'query("SELECT * FROM users WHERE id = ?", [userId]);',
+      };
     }
 
     if (title.includes("command") || title.includes("exec")) {
-      return `// Avoid executing user-controlled input:
-// exec(userCommand);
-
-// Use allowlists and validate input:
-const allowedCommands = ['list', 'status', 'help'];
-if (allowedCommands.includes(userInput)) {
-  // Execute only pre-defined safe operations
-}`;
+      return {
+        vulnerableCode: 'exec(userCommand);',
+        secureCode: 'const allowedCommands = ["list", "status"];\nif (allowedCommands.includes(userInput)) {\n  // Execute only pre-approved operations\n}',
+      };
     }
 
-    return undefined;
+    return null;
   };
 
   const handleReset = () => {

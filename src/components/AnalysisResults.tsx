@@ -8,10 +8,11 @@ export interface SecurityIssue {
   description: string;
 }
 
-export interface SuggestedPattern {
-  title: string;
-  explanation: string;
-  codeSnippet?: string;
+export interface SuggestedFix {
+  vulnerabilityName: string;
+  whyThisWorks: string;
+  vulnerableCode?: string | null;
+  secureCode?: string | null;
 }
 
 export interface LanguageMismatch {
@@ -23,7 +24,7 @@ export interface AnalysisResult {
   issues: SecurityIssue[];
   explanation: string;
   saferPractices: string[];
-  suggestedPattern?: SuggestedPattern | null;
+  suggestedFix?: SuggestedFix | null;
   languageMismatch?: LanguageMismatch | null;
 }
 
@@ -160,8 +161,8 @@ export function AnalysisResults({ result }: AnalysisResultsProps) {
         </p>
       </div>
 
-      {/* Suggested Safer Pattern Section */}
-      {result.suggestedPattern && (
+      {/* AI-Generated Fix Section */}
+      {result.suggestedFix && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -170,18 +171,51 @@ export function AnalysisResults({ result }: AnalysisResultsProps) {
         >
           <div className="flex items-center gap-2 mb-4">
             <Lightbulb className="w-5 h-5 text-primary" />
-            <h3 className="text-lg font-semibold">Suggested Safer Pattern</h3>
+            <h3 className="text-lg font-semibold">
+              AI-Generated Fix for {result.suggestedFix.vulnerabilityName}
+            </h3>
           </div>
 
           <div className="space-y-4">
-            <div>
-              <h4 className="font-medium text-foreground mb-1">{result.suggestedPattern.title}</h4>
-              <p className="text-sm text-muted-foreground">{result.suggestedPattern.explanation}</p>
+            {/* Why This Works */}
+            <div className="bg-secondary/30 rounded-lg p-4 border border-border/30">
+              <h4 className="font-medium text-foreground mb-2 flex items-center gap-2">
+                <Info className="w-4 h-4 text-primary" />
+                Why this fix works:
+              </h4>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {result.suggestedFix.whyThisWorks}
+              </p>
             </div>
 
-            {result.suggestedPattern.codeSnippet && (
-              <div className="rounded-md bg-secondary/80 border border-border/50 p-4 font-mono text-sm overflow-x-auto">
-                <pre className="text-foreground/90 whitespace-pre-wrap">{result.suggestedPattern.codeSnippet}</pre>
+            {/* Before/After Code Comparison */}
+            {(result.suggestedFix.vulnerableCode || result.suggestedFix.secureCode) && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Before (Vulnerable Code) */}
+                {result.suggestedFix.vulnerableCode && (
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-medium text-destructive flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4" />
+                      Before (Vulnerable Code):
+                    </h4>
+                    <div className="rounded-md bg-destructive/10 border border-destructive/30 p-4 font-mono text-sm overflow-x-auto">
+                      <pre className="text-foreground/90 whitespace-pre-wrap">{result.suggestedFix.vulnerableCode}</pre>
+                    </div>
+                  </div>
+                )}
+
+                {/* After (Secure Fix) */}
+                {result.suggestedFix.secureCode && (
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-medium text-success flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4" />
+                      After (Secure Fix):
+                    </h4>
+                    <div className="rounded-md bg-success/10 border border-success/30 p-4 font-mono text-sm overflow-x-auto">
+                      <pre className="text-foreground/90 whitespace-pre-wrap">{result.suggestedFix.secureCode}</pre>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
