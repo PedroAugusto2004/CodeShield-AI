@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Code2, Play, Loader2 } from "lucide-react";
+import { Code2, Play, Loader2, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -13,22 +13,31 @@ import {
 
 interface CodeInputProps {
   onAnalyze: (code: string, language: string) => void;
+  onReset?: () => void;
   isLoading: boolean;
 }
 
-const PLACEHOLDER_CODE = `// Paste your code here to analyze for security issues
-// Example (JavaScript):
-const password = "admin123";
-const query = "SELECT * FROM users WHERE id = " + userId;
+const PLACEHOLDER_CODE = `// Example (JavaScript)
+function greetUser(req, res) {
+  const name = req.query.name;
+  res.send("Hello " + name);
+}
 `;
 
-export function CodeInput({ onAnalyze, isLoading }: CodeInputProps) {
+export function CodeInput({ onAnalyze, onReset, isLoading }: CodeInputProps) {
   const [code, setCode] = useState("");
   const [language, setLanguage] = useState("javascript");
 
   const handleAnalyze = () => {
     if (code.trim()) {
       onAnalyze(code, language);
+    }
+  };
+
+  const handleReset = () => {
+    setCode("");
+    if (onReset) {
+      onReset();
     }
   };
 
@@ -45,6 +54,9 @@ export function CodeInput({ onAnalyze, isLoading }: CodeInputProps) {
       </div>
 
       <div className="space-y-4">
+        <p className="text-muted-foreground text-sm">
+          Paste a short code snippet to receive an educational security review.
+        </p>
         <Textarea
           value={code}
           onChange={(e) => setCode(e.target.value)}
@@ -62,27 +74,49 @@ export function CodeInput({ onAnalyze, isLoading }: CodeInputProps) {
               <SelectContent>
                 <SelectItem value="javascript">JavaScript</SelectItem>
                 <SelectItem value="python">Python</SelectItem>
+                <SelectItem value="c">C</SelectItem>
+                <SelectItem value="cpp">C++</SelectItem>
+                <SelectItem value="java">Java</SelectItem>
+                <SelectItem value="csharp">C#</SelectItem>
+                <SelectItem value="go">Go</SelectItem>
+                <SelectItem value="ruby">Ruby</SelectItem>
+                <SelectItem value="php">PHP</SelectItem>
+                <SelectItem value="swift">Swift</SelectItem>
+                <SelectItem value="kotlin">Kotlin</SelectItem>
+                <SelectItem value="rust">Rust</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          <Button
-            onClick={handleAnalyze}
-            disabled={!code.trim() || isLoading}
-            className="btn-glow bg-primary text-primary-foreground hover:bg-primary/90 px-8"
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Analyzing...
-              </>
-            ) : (
-              <>
-                <Play className="w-4 h-4 mr-2" />
-                Analyze Code
-              </>
-            )}
-          </Button>
+          <div className="flex gap-3">
+            <Button
+              variant="outline"
+              onClick={handleReset}
+              disabled={isLoading || (!code && !onReset)}
+              className="border-border/50 hover:bg-secondary"
+            >
+              <RotateCcw className="w-4 h-4 mr-2" />
+              New Analysis
+            </Button>
+
+            <Button
+              onClick={handleAnalyze}
+              disabled={!code.trim() || isLoading}
+              className="btn-glow bg-primary text-primary-foreground hover:bg-primary/90 px-8"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Analyzing...
+                </>
+              ) : (
+                <>
+                  <Play className="w-4 h-4 mr-2" />
+                  Analyze Code
+                </>
+              )}
+            </Button>
+          </div>
         </div>
       </div>
     </motion.div>

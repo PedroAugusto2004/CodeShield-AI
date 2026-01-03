@@ -51,13 +51,21 @@ const Index = () => {
     }
   };
 
+  const handleReset = () => {
+    setResult(null);
+  };
+
   return (
     <div className="min-h-screen gradient-bg grid-pattern">
       <div className="container max-w-4xl mx-auto px-4 pb-16">
         <Header />
 
         <main className="space-y-8">
-          <CodeInput onAnalyze={handleAnalyze} isLoading={isLoading} />
+          <CodeInput
+            onAnalyze={handleAnalyze}
+            onReset={handleReset}
+            isLoading={isLoading}
+          />
 
           <AnimatePresence mode="wait">
             {isLoading && (

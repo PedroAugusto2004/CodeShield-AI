@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { AlertTriangle, CheckCircle, Info, ShieldCheck, Lightbulb } from "lucide-react";
+import { AlertTriangle, CheckCircle, Info, ShieldCheck, Lightbulb, Search, Brain, CheckCircle2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export interface SecurityIssue {
@@ -21,17 +21,17 @@ interface AnalysisResultsProps {
 const severityConfig = {
   high: {
     icon: AlertTriangle,
-    label: "High",
+    label: "Risk Level: High",
     className: "bg-destructive/20 text-destructive border-destructive/30",
   },
   medium: {
     icon: AlertTriangle,
-    label: "Medium",
+    label: "Risk Level: Moderate",
     className: "bg-warning/20 text-warning border-warning/30",
   },
   low: {
     icon: Info,
-    label: "Low",
+    label: "Risk Level: Low",
     className: "bg-muted text-muted-foreground border-border",
   },
 };
@@ -50,12 +50,12 @@ export function AnalysisResults({ result }: AnalysisResultsProps) {
       <div className="result-card p-6">
         <div className="flex items-center gap-2 mb-4">
           {hasIssues ? (
-            <AlertTriangle className="w-5 h-5 text-warning" />
+            <Search className="w-5 h-5 text-primary" />
           ) : (
             <ShieldCheck className="w-5 h-5 text-success" />
           )}
           <h3 className="text-lg font-semibold">
-            {hasIssues ? "Potential Security Issues" : "No Issues Found"}
+            {hasIssues ? "Potential Issues" : "No Issues Found"}
           </h3>
           {hasIssues && (
             <Badge variant="outline" className="ml-2 text-xs">
@@ -69,7 +69,7 @@ export function AnalysisResults({ result }: AnalysisResultsProps) {
             {result.issues.map((issue, index) => {
               const config = severityConfig[issue.severity];
               const Icon = config.icon;
-              
+
               return (
                 <motion.li
                   key={index}
@@ -79,10 +79,9 @@ export function AnalysisResults({ result }: AnalysisResultsProps) {
                   className="p-4 rounded-lg bg-secondary/50 border border-border/50"
                 >
                   <div className="flex items-start gap-3">
-                    <Icon className={`w-5 h-5 mt-0.5 flex-shrink-0 ${
-                      issue.severity === 'high' ? 'text-destructive' : 
+                    <Icon className={`w-5 h-5 mt-0.5 flex-shrink-0 ${issue.severity === 'high' ? 'text-destructive' :
                       issue.severity === 'medium' ? 'text-warning' : 'text-muted-foreground'
-                    }`} />
+                      }`} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
                         <span className="font-medium">{issue.title}</span>
@@ -112,7 +111,7 @@ export function AnalysisResults({ result }: AnalysisResultsProps) {
       {/* Explanation Section */}
       <div className="result-card p-6">
         <div className="flex items-center gap-2 mb-4">
-          <Info className="w-5 h-5 text-primary" />
+          <Brain className="w-5 h-5 text-primary" />
           <h3 className="text-lg font-semibold">Explanation</h3>
         </div>
         <p className="text-muted-foreground leading-relaxed">
@@ -123,8 +122,8 @@ export function AnalysisResults({ result }: AnalysisResultsProps) {
       {/* Safer Practices Section */}
       <div className="result-card p-6">
         <div className="flex items-center gap-2 mb-4">
-          <Lightbulb className="w-5 h-5 text-success" />
-          <h3 className="text-lg font-semibold">Safer Coding Practices</h3>
+          <CheckCircle2 className="w-5 h-5 text-success" />
+          <h3 className="text-lg font-semibold">Safer Practices</h3>
         </div>
         <ul className="space-y-3">
           {result.saferPractices.map((practice, index) => (

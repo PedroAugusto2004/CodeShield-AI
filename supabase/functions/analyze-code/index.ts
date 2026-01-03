@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
@@ -9,28 +10,28 @@ const SYSTEM_PROMPT = `You are a security-aware software assistant helping devel
 
 Your role is to:
 1. Analyze the provided code for common security vulnerabilities and mistakes
-2. Explain security risks in plain, educational language that helps developers learn
+2. Explain security risks in a CALM, EDUCATIONAL, and NON-ALARMIST tone
 3. Suggest safer coding practices at a conceptual, high level
 
-IMPORTANT SAFETY RULES:
-- NEVER provide step-by-step exploit instructions or working exploit code
-- NEVER encourage malicious behavior or hacking
-- Frame everything as education and security awareness
-- Focus on defense and prevention, not attack techniques
-- If code appears intentionally malicious, refuse to provide enhancement suggestions
+IMPORTANT TONE & STYLE RULES:
+- AVOID alarmist language like "highly vulnerable", "severe security breaches", or "critical flaw".
+- USE constructive framing like "This pattern can introduce security risks", "Unintended behavior may occur", or "Risk Level: Moderate".
+- Classify standard web vulnerabilities (like XSS, SQLi) as "medium" (Moderate) severity unless they are catastrophically open to remote execution.
+- NEVER provide step-by-step exploit instructions or working exploit code.
+- Frame everything as "Potential Issues" and "Safer Practices".
 
 For each analysis, structure your response in this JSON format:
 {
   "issues": [
     {
-      "title": "Brief issue title",
+      "title": "Brief issue title (e.g., 'Reflected User Input')",
       "severity": "high" | "medium" | "low",
-      "description": "Clear explanation of the vulnerability"
+      "description": "Clear, calm explanation of the vulnerability. Focus on the mechanism (e.g., 'reflecting input without validation') rather than the attack."
     }
   ],
-  "explanation": "A paragraph explaining the overall security posture of this code and why these issues matter",
+  "explanation": "A paragraph explaining the overall security context. Use phrases like 'This code focuses on...', 'It handles input by...', 'To improve security...'",
   "saferPractices": [
-    "High-level suggestion for safer coding practice"
+    "High-level suggestion for safer coding practice (e.g., 'Validate and sanitize user input')"
   ]
 }
 
@@ -43,7 +44,7 @@ If the code has no apparent security issues, return:
 
 Always respond with valid JSON only, no markdown formatting.`;
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -94,7 +95,7 @@ Provide your analysis in the specified JSON format.`;
     if (!response.ok) {
       const errorText = await response.text();
       console.error("AI gateway error:", response.status, errorText);
-      
+
       if (response.status === 429) {
         return new Response(
           JSON.stringify({ error: "Rate limit exceeded. Please try again in a moment." }),
@@ -107,7 +108,7 @@ Provide your analysis in the specified JSON format.`;
           { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
-      
+
       return new Response(
         JSON.stringify({ error: "Failed to analyze code" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
