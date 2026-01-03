@@ -50,6 +50,15 @@ const severityConfig = {
 };
 
 export function AnalysisResults({ result }: AnalysisResultsProps) {
+  console.log("Analysis Result:", result);
+  /* DEBUG: Force mock mismatch to test UI */
+  // const debugResult = {
+  //   ...result,
+  //   languageMismatch: { detected: "JavaScript", message: "Debug Mode: Mismatch Detected" }
+  // };
+  // const effectiveResult = debugResult; 
+  /* Use real result for now, but uncomment above lines to test locally if backend fails */
+
   const hasIssues = result.issues.length > 0;
 
   return (
@@ -64,12 +73,12 @@ export function AnalysisResults({ result }: AnalysisResultsProps) {
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
-          className="result-card bg-warning/10 border-warning/30 p-4"
+          className="result-card bg-orange-500/15 border-orange-500/50 p-4"
         >
           <div className="flex items-start gap-3">
-            <AlertTriangle className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
+            <AlertTriangle className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" />
             <div>
-              <h4 className="font-semibold text-warning mb-1">Language Mismatch Detected</h4>
+              <h4 className="font-semibold text-orange-500 mb-1">Language Mismatch Detected</h4>
               <p className="text-sm text-foreground/80 leading-relaxed">
                 {result.languageMismatch.message}
               </p>
