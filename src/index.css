@@ -204,3 +204,46 @@
     background-size: 40px 40px;
   }
 }
+
+/* Mobile Optimizations */
+@media (max-width: 640px) {
+  /* Smoother scrolling on mobile */
+  html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Prevent text size adjustment on orientation change */
+  body {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* Increase touch target sizes */
+  button, 
+  [role="button"],
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+  }
+
+  /* Improve code block readability */
+  .code-editor {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* Prevent horizontal overflow */
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Better result card padding */
+  .result-card {
+    padding: 1rem;
+  }
+}
+

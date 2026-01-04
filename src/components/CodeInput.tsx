@@ -17,7 +17,7 @@ interface CodeInputProps {
   isLoading: boolean;
 }
 
-const PLACEHOLDER_CODE = `// Example (JavaScript)
+const PLACEHOLDER_CODE = `// Example (JavaScript/TypeScript)
 function greetUser(req, res) {
   const name = req.query.name;
   res.send("Hello " + name);
@@ -61,18 +61,19 @@ export function CodeInput({ onAnalyze, onReset, isLoading }: CodeInputProps) {
           value={code}
           onChange={(e) => setCode(e.target.value)}
           placeholder={PLACEHOLDER_CODE}
-          className="code-editor min-h-[250px] resize-y border-border/50 focus:border-primary/50 placeholder:text-muted-foreground/50"
+          className="code-editor min-h-[180px] sm:min-h-[250px] resize-y border-border/50 focus:border-primary/50 placeholder:text-muted-foreground/50 text-base"
         />
 
-        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-muted-foreground">Language:</span>
+        <div className="flex flex-col gap-4 w-full">
+          <div className="flex items-center gap-3 w-full">
+            <span className="text-sm text-muted-foreground whitespace-nowrap">Language:</span>
             <Select value={language} onValueChange={setLanguage}>
-              <SelectTrigger className="w-[160px] bg-secondary border-border/50">
+              <SelectTrigger className="flex-1 sm:flex-none sm:w-[180px] bg-secondary border-border/50 h-11">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="javascript">JavaScript</SelectItem>
+                <SelectItem value="typescript">TypeScript</SelectItem>
                 <SelectItem value="python">Python</SelectItem>
                 <SelectItem value="c">C</SelectItem>
                 <SelectItem value="cpp">C++</SelectItem>
@@ -88,12 +89,12 @@ export function CodeInput({ onAnalyze, onReset, isLoading }: CodeInputProps) {
             </Select>
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto sm:justify-end">
             <Button
               variant="outline"
               onClick={handleReset}
               disabled={isLoading || (!code && !onReset)}
-              className="border-border/50 hover:bg-secondary"
+              className="border-border/50 hover:bg-secondary h-11 w-full sm:w-auto order-2 sm:order-1"
             >
               <RotateCcw className="w-4 h-4 mr-2" />
               New Analysis
@@ -102,7 +103,7 @@ export function CodeInput({ onAnalyze, onReset, isLoading }: CodeInputProps) {
             <Button
               onClick={handleAnalyze}
               disabled={!code.trim() || isLoading}
-              className="btn-glow bg-primary text-primary-foreground hover:bg-primary/90 px-8"
+              className="btn-glow bg-primary text-primary-foreground hover:bg-primary/90 px-8 h-11 w-full sm:w-auto order-1 sm:order-2"
             >
               {isLoading ? (
                 <>
